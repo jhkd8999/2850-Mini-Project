@@ -1,0 +1,10 @@
+<label for="emailField">Email Address</label>
+<input id="emailField" name="email">
+<label for="passwordField">Password</label>
+<input id="passwordField" name="password" type="password">
+<label for="first_nameField">First Name</label>
+<input id="first_nameField" name="first_name">
+<label for="last_nameField">Last Name</label>
+<input id="last_nameField" name="last_name">
+<label for="addressField">Home Address</label>
+<input id="addressField" name="address">
