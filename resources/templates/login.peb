@@ -1,0 +1,29 @@
+{% extends "base.peb" %}
+
+{% block content %}
+<h1>Library Login</h1>
+
+<p>
+Dont have an account?
+<a href="/register">Click here to register</a>
+</p>
+
+<form action="/login" method="POST">
+
+    <label for="email">Email Address</label><br>
+    <input type="email" id="email" name="email" required>
+
+    <br>
+    <br>
+    <label for="password">Password</label><br>
+    <input type="password" id="password" name="password" required>
+
+    <br>
+    <br>
+    <input type="sumbit" value="Log In">
+
+</form>
+
+{% include "form-error.peb" %}
+
+{% endblock %}

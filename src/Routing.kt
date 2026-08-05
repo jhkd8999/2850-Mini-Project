@@ -43,5 +43,5 @@ private suspend fun ApplicationCall.registerUser() {
 }
 
 private suspend fun ApplicationCall.loginPage() {
-    respondTemplate("base.peb", model = emptyMap())
+    respondTemplate("login.peb", model = emptyMap())
 }
