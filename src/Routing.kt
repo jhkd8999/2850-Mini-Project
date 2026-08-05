@@ -35,22 +35,10 @@ private suspend fun ApplicationCall.registerUser() {
 
     if(password == null || password.length < 8){
 
-        respondTemplate(
-            "register.peb",
-            mapOf(
-                "error" to "Password must be at least 8 characters"
-            )
-        )
-
+        respondTemplate("register.peb",mapOf("error" to "Password must be at least 8 characters" ))
     } else {
 
-        respondTemplate(
-            "login.peb",
-            mapOf(
-                "message" to "Account created"
-            )
-        )
-
+        respondTemplate("login.peb",mapOf("message" to "Account created"))
     }
 }
 
