@@ -37,6 +37,11 @@ private suspend fun ApplicationCall.registerUser() {
     val address = params["address"] ?: ""
     val password = params["password"] ?: ""
     
+    
+    if (repository.findByEmail(email) != null) {
+        respondTemplate("register.peb",mapOf("error" to "Email already linked to account, please log in or try again"))
+    }
+    
     repository.addUser(
 
         User(
