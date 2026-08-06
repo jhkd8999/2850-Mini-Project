@@ -1,23 +1,90 @@
 {% extends "base.peb" %}
+
 {% block content %}
+
+<h1>Library Catalogue</h1>
+
+<p>Search the library catalogue by book title, author or ISBN.</p>
+
+<form action="/search" method="GET">
+
+    <label for="bookField">Search for a book</label>
+
+    <input
+        id="bookField"
+        name="book"
+        type="search"
+        placeholder="Enter title, author or ISBN"
+        value="{{ query | default('') }}"
+    >
+
+    <input type="submit" value="Search">
+
+</form>
+
 <hr>
 
-{% for book in books %}
+{% if searched %}
 
-<h3>{{ book.title }}</h3>
+    {% if books is empty %}
 
-<p>
-Author: {{ book.author }}<br>
-Location: {{ book.location }}<br>
-Available:
-{% if book.available %}
-Yes
-{% else %}
-No
+        <p>No books were found matching "{{ query }}".</p>
+
+    {% else %}
+
+        <h2>Search Results</h2>
+
+        {% for book in books %}
+
+            <article>
+
+                <h3>{{ book.title }}</h3>
+
+                <p>
+                    <strong>Author:</strong>
+                    {{ book.author }}
+                </p>
+
+                <p>
+                    <strong>Format:</strong>
+                    {{ book.format }}
+                </p>
+
+                <p>
+                    <strong>Availability:</strong>
+
+                    {% if book.available %}
+                        Available
+                    {% else %}
+                        Unavailable
+                    {% endif %}
+                </p>
+
+                <p>
+                    <strong>Location:</strong>
+
+                    {% if book.location %}
+                        {{ book.location }}
+                    {% else %}
+                        Digital item
+                    {% endif %}
+                </p>
+
+                {% if book.notes %}
+                    <p>
+                        <strong>Notes:</strong>
+                        {{ book.notes }}
+                    </p>
+                {% endif %}
+
+            </article>
+
+            <hr>
+
+        {% endfor %}
+
+    {% endif %}
+
 {% endif %}
-</p>
 
-<hr>
-
-{% endfor %}
 {% endblock %}

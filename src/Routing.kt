@@ -14,9 +14,11 @@ fun Application.configureRouting() {
         // Map URLs onto request handling code here
         get("/") { call.homePage() }
         get("/login") { call.loginPage() }
+        post("/login") { call.loginUser() }
         get("/register") { call.registrationPage() }
         post("/register") { call.registerUser() }
         get("/catalogue") { call.cataloguePage() }
+        get("/search") {call.searchCatalogue() }
     }
 }
 
@@ -37,14 +39,28 @@ private suspend fun ApplicationCall.registerUser() {
     val email = params["email"] ?: ""
     val address = params["address"] ?: ""
     val password = params["password"] ?: ""
-    
-    
-    if (repository.findByEmail(email) != null) {
-        respondTemplate("register.peb",mapOf("error" to "Email already linked to account, please log in or try again"))
-    }
-    
-    repository.addUser(
 
+    if (repository.findByEmail(email) != null) {
+        respondTemplate(
+            "register.peb",
+            mapOf(
+                "error" to "Email already linked to an account, please log in or try again."
+            )
+        )
+        return
+    }
+
+    if (password.length < 8) {
+        respondTemplate(
+            "register.peb",
+            mapOf(
+                "error" to "Password must be at least 8 characters."
+            )
+        )
+        return
+    }
+
+    repository.addUser(
         User(
             firstName = firstName,
             lastName = lastName,
@@ -52,17 +68,14 @@ private suspend fun ApplicationCall.registerUser() {
             address = address,
             password = password
         )
-
     )
 
-
-    if(password == null || password.length < 8){
-
-        respondTemplate("register.peb",mapOf("error" to "Password must be at least 8 characters" ))
-    } else {
-
-        respondTemplate("login.peb",mapOf("message" to "Account created"))
-    }
+    respondTemplate(
+        "login.peb",
+        mapOf(
+            "message" to "Account created"
+        )
+    )
 }
 
 private suspend fun ApplicationCall.loginPage() {
@@ -89,24 +102,37 @@ private suspend fun ApplicationCall.loginUser() {
     else {
 
         // Successful login
+        respondRedirect("/catalogue")
 
     }
 }
 
 private suspend fun ApplicationCall.cataloguePage() {
-    val repository = BookRepository()
-    val books = repository.getAllBooks()
-
-    respondTemplate("catalogue.peb",mapOf("books" to books))
-
+    respondTemplate(
+        "catalogue.peb",
+        model = mapOf(
+            "books" to emptyList<Book>(),
+            "query" to "",
+            "searched" to false
+        )
+    )
 }
 
-private suspend fun ApplicationCall.searchBooks() {
-    val query = parameters["query"] ?: ""
+private suspend fun ApplicationCall.searchCatalogue() {
+
+    val query = request.queryParameters["book"] ?: ""
+
     val repository = BookRepository()
+
     val books = repository.searchBooks(query)
 
-    respondTemplate("catalogue.peb",mapOf("books" to books))
-
+    respondTemplate(
+        "catalogue.peb",
+        model = mapOf(
+            "books" to books,
+            "query" to query,
+            "searched" to true
+        )
+    )
 }
 

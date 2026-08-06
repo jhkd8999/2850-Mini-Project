@@ -5,6 +5,7 @@ import org.jetbrains.amper.ktor.models.Book
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.or
 
 class BookRepository {
 
@@ -45,7 +46,7 @@ class BookRepository {
         return transaction {
             Books
                 .selectAll()
-                .where { Books.title like "%$query%" }
+                .where { (Books.title like "%$query%") or (Books.author like "%$query%") or (Books. isbn like "%$query%") }
                 .map {
                     Book(
                         id = it[Books.id],
