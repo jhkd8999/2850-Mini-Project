@@ -14,7 +14,8 @@ object DatabaseTemplate {
         )
 
         transaction {
-            SchemaUtils.create(Users)
+            SchemaUtils.create(Users,Books)
         }
+        BookCsvImporter.importIfEmpty()
     }
 }

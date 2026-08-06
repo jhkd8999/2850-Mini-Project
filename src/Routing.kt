@@ -6,8 +6,8 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.request.receiveParameters
 import io.ktor.server.pebble.respondTemplate
-import org.jetbrains.amper.ktor.repository.UserRepository
-import org.jetbrains.amper.ktor.models.User
+import org.jetbrains.amper.ktor.repository.*
+import org.jetbrains.amper.ktor.models.*
 
 fun Application.configureRouting() {
     routing {
@@ -16,6 +16,7 @@ fun Application.configureRouting() {
         get("/login") { call.loginPage() }
         get("/register") { call.registrationPage() }
         post("/register") { call.registerUser() }
+        get("/catalogue") { call.cataloguePage() }
     }
 }
 
@@ -91,3 +92,21 @@ private suspend fun ApplicationCall.loginUser() {
 
     }
 }
+
+private suspend fun ApplicationCall.cataloguePage() {
+    val repository = BookRepository()
+    val books = repository.getAllBooks()
+
+    respondTemplate("catalogue.peb",mapOf("books" to books))
+
+}
+
+private suspend fun ApplicationCall.searchBooks() {
+    val query = parameters["query"] ?: ""
+    val repository = BookRepository()
+    val books = repository.searchBooks(query)
+
+    respondTemplate("catalogue.peb",mapOf("books" to books))
+
+}
+
