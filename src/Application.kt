@@ -12,5 +12,7 @@ fun Application.module() {
     DatabaseTemplate.init()
     
     configureTemplates()
+    configureSessions()
+    configureAuthentication()
     configureRouting()
 }

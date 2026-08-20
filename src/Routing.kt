@@ -8,17 +8,40 @@ import io.ktor.server.request.receiveParameters
 import io.ktor.server.pebble.respondTemplate
 import org.jetbrains.amper.ktor.repository.*
 import org.jetbrains.amper.ktor.models.*
+import io.ktor.server.auth.authenticate
+import io.ktor.server.auth.principal
+import io.ktor.server.auth.UserIdPrincipal
+import io.ktor.server.sessions.sessions
+import io.ktor.server.sessions.set
+import io.ktor.server.sessions.clear
 
 fun Application.configureRouting() {
     routing {
         // Map URLs onto request handling code here
         get("/") { call.homePage() }
         get("/login") { call.loginPage() }
-        post("/login") { call.loginUser() }
         get("/register") { call.registrationPage() }
         post("/register") { call.registerUser() }
-        get("/catalogue") { call.cataloguePage() }
-        get("/search") {call.searchCatalogue() }
+        
+        authenticate("auth-form"){
+            post("/login") {
+                val principal = call.principal<UserIdPrincipal>()
+                if (principal != null) {
+                    call.sessions.set(
+                        UserSession(principal.name)
+                    )
+                    call.respondRedirect("/catalogue")
+                }
+            }
+        }
+        authenticate("auth-session") {
+            get("/catalogue") { call.cataloguePage() }
+            get("/search") {call.searchCatalogue() }
+            get("/logout") {
+                call.sessions.clear<UserSession>()
+                call.respondRedirect("/login")
+            }
+        }
     }
 }
 
@@ -82,30 +105,6 @@ private suspend fun ApplicationCall.loginPage() {
     respondTemplate("login.peb", model = emptyMap())
 }
 
-private suspend fun ApplicationCall.loginUser() {
-    val params = receiveParameters()
-    val email = params["email"] ?: ""
-    val password = params["password"] ?: ""
-    val repository = UserRepository()
-    val user = repository.findByEmail(email)
-
-    if (user == null) {
-
-        // Email not found
-
-    }
-    else if (user.password != password) {
-
-        // Wrong password
-
-    }
-    else {
-
-        // Successful login
-        respondRedirect("/catalogue")
-
-    }
-}
 
 private suspend fun ApplicationCall.cataloguePage() {
     respondTemplate(
