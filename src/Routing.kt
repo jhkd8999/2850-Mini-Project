@@ -13,6 +13,7 @@ import org.jetbrains.amper.ktor.models.User
 import org.jetbrains.amper.ktor.repository.BookRepository
 import org.jetbrains.amper.ktor.repository.LoanRepository
 import org.jetbrains.amper.ktor.repository.UserRepository
+import org.jetbrains.amper.ktor.service.RecommendationService
 
 fun Application.configureRouting() {
     routing {
@@ -82,6 +83,29 @@ fun Application.configureRouting() {
                 
                 val loans = LoanRepository().getActiveLoansForUser(user.id)
                 call.respondTemplate("account.peb", call.baseModel() + mapOf("user" to user, "loans" to loans))
+            }
+            
+            get("/recommendations") {
+                val session = call.principal<UserSession>()
+                val user = session?.let{UserRepository().findByEmail(it.email)}
+                
+                if (user?.id == null) {
+                    call.respondRedirect("/login")
+                    return@get
+                }
+                
+                val bookRepository = BookRepository()
+                val loanRepository = LoanRepository()
+                val recommendationService = RecommendationService()
+                
+                val recommendations = recommendationService.recommend(
+                    allBooks = bookRepository.getAllBooks(),
+                    borrowedBookIds = loanRepository.getBorrowedBookIdsForUser(user.id),
+                    borrowCounts = loanRepository.getBorrowCounts(),
+                    limit = 5
+                )
+                
+                call.respondTemplate("recommendations.peb", call.baseModel() + mapOf("recommendations" to recommendations))
             }
             
         }

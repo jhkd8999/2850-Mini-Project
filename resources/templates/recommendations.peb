@@ -1,0 +1,45 @@
+{% extends "base.peb" %}
+
+{% block title %}
+Book Recommendations
+{% endblock %}
+
+{% block content %}
+
+<h2>Recommended for you</h2>
+
+<p>Recommedations are based on previous borrow history</p>
+
+{% if recommendations is empty %}
+
+<p>Not enough borrow information collected yet</p>
+
+{% else %}
+
+{% for recommendation in recommendations %}
+
+<article>
+    <h3>{{recommendation.book.title}}</h3>
+    <p><strong>Author:</strong>{{ recommendation.book.author}}</p>
+    <p><strong>Format:</strong>{{ recommendation.book.format}}</p>
+    
+    {% if recommendation.book.location %}
+        <p><strong>Location:</strong>{{ recommendation.book.location}}</p>
+    {% endif %}
+
+    {% if recommendation.justifications is not empty %}
+        <p><strong>Recommended to you because:</strong></p>
+        <ul>
+            {% for justification in recommendation.justifications %}
+                <li>{{ justification }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <form action="/books/{{recommendation.book.id}}/checkout" method="POST">
+        <button type="submit">Check Out</button>
+    </form>
+</article>
+{% endfor %}
+{% endif %}
+{% endblock %}

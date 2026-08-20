@@ -66,5 +66,17 @@ class LoanRepository {
         }
     }
     
+    fun getBorrowedBookIdsForUser(userId: Int): List<Int> {
+        return transaction {
+            Loan.selectAll().where{Loans.userId eq userId}.map{it[Loans.bookId]}
+        }
+    }
+    
+    fun getBorrowCounts(): Map<Int, Int> {
+        return transaction {
+            Loans.selectAll().map{it[Loans.bookId]}.groupingBy{it}.eachCount()
+        }
+    }
+    
     
 }
