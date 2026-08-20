@@ -15,9 +15,12 @@
 <body>
 <main class="container">
 <h1>Library System</h1>
+{% if loggedIn %}
+  <p>Welcome {{ firstName }} | <a href="/account">My Account</a> | <a href="/logout">Log out</a></p>
+{% else %}
+  <p><a href="/login">Log in</a></p>
+{% endif %}
 <br>
-<a href="/account">My Account</a>
-<a href="/logout">Log Out</a>
 {% block content %}{% endblock %}
 </main>
 </body>

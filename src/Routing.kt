@@ -81,7 +81,7 @@ fun Application.configureRouting() {
                 }
                 
                 val loans = LoanRepository().getActiveLoansForUser(user.id)
-                call.respondTemplate("account.peb", mapOf("user" to user, "loans" to loans))
+                call.respondTemplate("account.peb", call.baseModel() + mapOf("user" to user, "loans" to loans))
             }
             
         }
@@ -89,11 +89,11 @@ fun Application.configureRouting() {
 }
 
 private suspend fun ApplicationCall.homePage() {
-    respondTemplate("index.peb", model = emptyMap())
+    respondTemplate("index.peb", model = baseModel())
 }
 
 private suspend fun ApplicationCall.registrationPage() {
-    respondTemplate("register.peb", model = emptyMap())
+    respondTemplate("register.peb", model = baseModel())
 }
 
 private suspend fun ApplicationCall.registerUser() {
@@ -109,9 +109,7 @@ private suspend fun ApplicationCall.registerUser() {
     if (repository.findByEmail(email) != null) {
         respondTemplate(
             "register.peb",
-            mapOf(
-                "error" to "Email already linked to an account, please log in or try again."
-            )
+            baseModel() + mapOf("error" to "Email already linked to an account, please log in or try again.")
         )
         return
     }
@@ -119,9 +117,7 @@ private suspend fun ApplicationCall.registerUser() {
     if (password.length < 8) {
         respondTemplate(
             "register.peb",
-            mapOf(
-                "error" to "Password must be at least 8 characters."
-            )
+            baseModel() + mapOf("error" to "Password must be at least 8 characters.")
         )
         return
     }
@@ -145,14 +141,14 @@ private suspend fun ApplicationCall.registerUser() {
 }
 
 private suspend fun ApplicationCall.loginPage() {
-    respondTemplate("login.peb", model = emptyMap())
+    respondTemplate("login.peb", model = baseModel())
 }
 
 
 private suspend fun ApplicationCall.cataloguePage() {
     respondTemplate(
         "catalogue.peb",
-        model = mapOf(
+        model = baseModel() + mapOf(
             "books" to emptyList<Book>(),
             "query" to "",
             "searched" to false
@@ -170,7 +166,7 @@ private suspend fun ApplicationCall.searchCatalogue() {
 
     respondTemplate(
         "catalogue.peb",
-        model = mapOf(
+        model = baseModel() + mapOf(
             "books" to books,
             "query" to query,
             "searched" to true
@@ -178,3 +174,9 @@ private suspend fun ApplicationCall.searchCatalogue() {
     )
 }
 
+
+private suspend fun ApplicationCall.baseModel(): Map<String, Any> {
+    val session = sessions.get<UserSession>()
+    val user = session?.let{UserRepository().findByEmail(it.email)}
+    return mapOf("loggedIn" to (user != null),"firstName" to (user?.firstName ?: ""))
+}
