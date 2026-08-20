@@ -29,3 +29,4 @@ dependencies:
 
 test-dependencies:
   - $ktor.server.testHost
+  - org.jetbrains.kotlin:kotlin-test
