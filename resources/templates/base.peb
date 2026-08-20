@@ -16,7 +16,7 @@
 <main class="container">
 <h1>Library System</h1>
 {% if loggedIn %}
-  <p>Welcome </strong>{{ firstName }}</strong> | 
+  <p>Welcome <strong>{{ firstName }}</strong> | 
     <a href="/catalogue">Catalogue</a> | 
     <a href="/recommendations">Recommendations</a> | 
     <a href="/account">My Account</a> | 

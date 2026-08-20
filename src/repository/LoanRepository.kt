@@ -68,7 +68,7 @@ class LoanRepository {
     
     fun getBorrowedBookIdsForUser(userId: Int): List<Int> {
         return transaction {
-            Loan.selectAll().where{Loans.userId eq userId}.map{it[Loans.bookId]}
+            Loans.selectAll().where{Loans.userId eq userId}.map{it[Loans.bookId]}
         }
     }
     
