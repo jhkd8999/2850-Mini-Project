@@ -5,7 +5,7 @@ import org.jetbrains.amper.ktor.models.Recommendation
 
 class RecommendationService {
     
-    fun recommend(allBooks: List<Book>, borrowedBookIds: List<Int>, borrowCounts: Map<Int, Int>, limit: Int = 5): List<Recommendation> {
+    fun recommend(allBooks: List<Book>, borrowedBookIds: List<Int>, borrowCounts: Map<Int, Int>, similarHistoryScores: Map<Int, Int> = emptyMap(), limit: Int = 5): List<Recommendation> {
         
         val borrowedBooks = allBooks.filter { it.id in borrowedBookIds}
         val preferredAuthors = borrowedBooks.groupingBy {it.author}.eachCount()
@@ -38,6 +38,17 @@ class RecommendationService {
             score += popularity
             if (popularity > 0) {
                 justifications.add("This book is popular with other library customers")
+            }
+            
+            val similarUserScore = copies.sumOf { copy ->
+                if (copy.id == null) {
+                    0
+                } else {similarHistoryScores[copy.id] ?: 0}
+            }
+            
+            if (similarUserScore > 0) {
+                score += similarUserScore * 4
+                justifications.add("Customers like you also borrowed this")
             }
             
             Recommendation(

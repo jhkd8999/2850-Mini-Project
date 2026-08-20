@@ -102,6 +102,7 @@ fun Application.configureRouting() {
                     allBooks = bookRepository.getAllBooks(),
                     borrowedBookIds = loanRepository.getBorrowedBookIdsForUser(user.id),
                     borrowCounts = loanRepository.getBorrowCounts(),
+                    similarHistoryScores = loanRepository.getSimilarHistoryScores(user.id),
                     limit = 5
                 )
                 

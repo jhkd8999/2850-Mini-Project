@@ -152,4 +152,70 @@ class RecommendationServiceTest {
             recommendations.first().book.title
         )
     }
+    
+    @Test
+fun `similar borrowing histories increase recommendation ranking`() {
+
+    val testBooks = listOf(
+
+        Book(
+            id = 1,
+            title = "Borrowed Book",
+            author = "Author A",
+            isbn = null,
+            format = "PB",
+            location = "F1",
+            notes = null,
+            available = true
+        ),
+
+        Book(
+            id = 2,
+            title = "Normal Candidate",
+            author = "Author B",
+            isbn = null,
+            format = "HB",
+            location = "F2",
+            notes = null,
+            available = true
+        ),
+
+        Book(
+            id = 3,
+            title = "Similar User Candidate",
+            author = "Author C",
+            isbn = null,
+            format = "LP",
+            location = "F3",
+            notes = null,
+            available = true
+        )
+    )
+
+
+    val recommendations =
+        service.recommend(
+
+            allBooks =
+                testBooks,
+
+            borrowedBookIds =
+                listOf(1),
+
+            borrowCounts =
+                emptyMap(),
+
+            similarHistoryScores =
+                mapOf(
+                    3 to 2
+                )
+        )
+
+
+    assertEquals(
+        "Similar User Candidate",
+        recommendations.first().book.title
+    )
+    
+}
 }

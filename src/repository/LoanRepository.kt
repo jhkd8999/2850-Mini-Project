@@ -78,5 +78,27 @@ class LoanRepository {
         }
     }
     
+    fun getSimilarHistoryScores(userId: Int): Map<Int, Int> {
+        return transaction {
+            val loanHistory = Loans.selectAll().map{Pair(it[Loans.userId],it[Loans.bookId])}.distinct()
+            val userBookIds = loanHistory.filter{it.first == userId}.map{it.second}.toSet()
+            
+            if (userBookIds.isEmpty()) {
+                return@transaction emptyMap()
+            }
+            
+            val similarUserIds = loanHistory.filter{
+                it.first != userId && it.second in userBookIds
+            }.map{it.first}.toSet()
+            
+            val relatedBookIds = loanHistory.filter{
+                it.first in similarUserIds && it.second !in userBookIds
+            }.map{it.second}
+            
+            relatedBookIds.groupingBy{ it }.eachCount()
+        }
+        
+    }
+    
     
 }
