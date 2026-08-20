@@ -14,9 +14,9 @@ class RecommendationService {
         
         val bookGroups = allBooks.filter {it.available}.filter{titleKey(it) !in borrowedTitles}.groupBy{titleKey(it)}
         
-        val recommendations = bookGroups.map { ( , copies) ->
+        val recommendations = bookGroups.map { (_, copies) ->
             val book = copies.first()
-            val score = 0
+            var score = 0
             val justifications = mutableListOf<String>()
             
             val authorBorrowCount = preferredAuthors[book.author] ?: 0
