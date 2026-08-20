@@ -73,7 +73,7 @@
                     </p>
                 
                     <form action="/books/{{ book.id }}/checkout" method="POST">
-                        <button type="sumbit">Check Out</button> 
+                        <button type="submit">Check Out</button> 
                     </form>
 
                 {% else %}

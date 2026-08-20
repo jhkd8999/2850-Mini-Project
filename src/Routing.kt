@@ -134,9 +134,7 @@ private suspend fun ApplicationCall.registerUser() {
 
     respondTemplate(
         "login.peb",
-        mapOf(
-            "message" to "Account created"
-        )
+        baseModel() + mapOf("message" to "Account created")
     )
 }
 

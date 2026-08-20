@@ -5,7 +5,7 @@
 <h1>My Account</h1>
 
 <p>
-    Welcome {{ user.firstName }}
+    Welcome to your library page, {{ user.firstName }}
 </p>
 
 <p>
@@ -23,7 +23,7 @@
         <article>
             <h3>{{loan.bookTitle}}</h3>
             <form action="/books/{{loan.bookId}}/return" method="POST">
-                <button type="sumbit">Return Book</button>
+                <button type="submit">Return Book</button>
             </form>
         </article>
 
