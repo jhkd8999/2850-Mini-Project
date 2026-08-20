@@ -1,19 +1,18 @@
 package org.jetbrains.amper.ktor
 
-import io.ktor.http.Parameters
 import io.ktor.server.application.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
-import io.ktor.server.request.receiveParameters
+import io.ktor.server.auth.*
 import io.ktor.server.pebble.respondTemplate
-import org.jetbrains.amper.ktor.repository.*
-import org.jetbrains.amper.ktor.models.*
-import io.ktor.server.auth.authenticate
-import io.ktor.server.auth.principal
-import io.ktor.server.auth.UserIdPrincipal
-import io.ktor.server.sessions.sessions
-import io.ktor.server.sessions.set
-import io.ktor.server.sessions.clear
+import io.ktor.server.request.receiveParameters
+import io.ktor.server.response.respondRedirect
+import io.ktor.server.routing.*
+import io.ktor.server.sessions.*
+
+import org.jetbrains.amper.ktor.models.Book
+import org.jetbrains.amper.ktor.models.User
+import org.jetbrains.amper.ktor.repository.BookRepository
+import org.jetbrains.amper.ktor.repository.LoanRepository
+import org.jetbrains.amper.ktor.repository.UserRepository
 
 fun Application.configureRouting() {
     routing {

@@ -2,6 +2,7 @@ package org.jetbrains.amper.ktor.repository
 
 import org.jetbrains.amper.ktor.database.Books
 import org.jetbrains.amper.ktor.database.Loans
+import org.jetbrains.amper.ktor.models.Loan
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
@@ -33,7 +34,7 @@ class LoanRepository {
     
     fun returnBook(userId: Int, bookId: Int): Boolean {
         return transaction{
-            val loan = Loans.selectAll().where{(Loans.userId eq userId) and (Loans.bookId eq bookId) and Loans.returnedAt.isNull()}.singleOrNull()}
+            val loan = Loans.selectAll().where{(Loans.userId eq userId) and (Loans.bookId eq bookId) and Loans.returnedAt.isNull()}.singleOrNull()
             
             if (loan == null) {return@transaction false}
             
@@ -53,7 +54,7 @@ class LoanRepository {
         
         return transaction {
             (Loans innerJoin Books).selectAll().where{
-                (Loans.userId eq userId)
+                (Loans.userId eq userId) and
                 Loans.returnedAt.isNull()
             }.map {row->
                 Loan(id=row[Loans.id],
