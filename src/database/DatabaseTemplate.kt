@@ -3,6 +3,8 @@ package org.jetbrains.amper.ktor.database
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.deleteAll
+import org.jetbrains.exposed.sql.update
 
 object DatabaseTemplate {
 
@@ -15,6 +17,11 @@ object DatabaseTemplate {
 
         transaction {
             SchemaUtils.create(Users,Books,Loans)
+            
+            //Temp code to delete checkout history / users
+            // Loans.deleteAll()
+            // Users.deleteAll()
+            // Books.update{it[available] = true}
         }
         
         
