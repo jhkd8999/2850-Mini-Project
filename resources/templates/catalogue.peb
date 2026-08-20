@@ -51,16 +51,6 @@
                 </p>
 
                 <p>
-                    <strong>Availability:</strong>
-
-                    {% if book.available %}
-                        Available
-                    {% else %}
-                        Unavailable
-                    {% endif %}
-                </p>
-
-                <p>
                     <strong>Location:</strong>
 
                     {% if book.location %}
@@ -76,6 +66,25 @@
                         {{ book.notes }}
                     </p>
                 {% endif %}
+
+                {% if book.available %}
+                    <p>
+                        <strong>Available</strong>
+                    </p>
+                
+                    <form action="/books/{{ book.id }}/checkout" method="POST">
+                        <button type="sumbit">Check Out</button> 
+                    </form>
+
+                {% else %}
+                    <p>
+                        <strong>Currently unavailable</strong>
+                    </p>
+                {% endif %}
+
+
+
+
 
             </article>
 

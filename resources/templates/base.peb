@@ -16,6 +16,8 @@
 <main class="container">
 <h1>Library System</h1>
 <br>
+<a href="/account">My Account</a>
+<a href="/logout">Log Out</a>
 {% block content %}{% endblock %}
 </main>
 </body>

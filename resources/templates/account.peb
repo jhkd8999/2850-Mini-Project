@@ -1,0 +1,34 @@
+{% extends "base.peb" %}
+
+{% block content %}
+
+<h1>My Account</h1>
+
+<p>
+    Welcome {{ user.firstName }}
+</p>
+
+<p>
+    <a href="/catalogue">Return to catalogue</a>
+</p>
+
+<h2>Borrowed Books</h2>
+
+{% if loans is empty %}
+
+    <p>You have no books checked out</p>
+
+{% else %}
+    {% for loan in loans %}
+        <article>
+            <h3>{{loan.bookTitle}}</h3>
+            <form action="/books/{{loan.bookId}}/return" method="POST">
+                <button type="sumbit">Return Book</button>
+            </form>
+        </article>
+
+        <hr>
+    {% endfor %}
+{% endif %}
+
+{% endblock %}

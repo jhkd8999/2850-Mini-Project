@@ -38,8 +38,52 @@ fun Application.configureRouting() {
             get("/search") {call.searchCatalogue() }
             get("/logout") {
                 call.sessions.clear<UserSession>()
-                call.respondRedirect("/login")
+                call.respondRedirect("/login")   
             }
+            
+            post("/books/{id}/checkout"){
+                val session = call.principal<UserSession>()
+                val user = session?.let{UserRepository().findByEmail(it.email)}
+                val bookId = call.parameters["id"]?.toIntOrNull()
+                
+                if (user?.id == null || bookId == null) {
+                    call.respondRedirect("/catalogue") 
+                    return@post
+                }
+                
+                val success = LoanRepository().checkoutBook(user.id, bookId)
+                if (success) {
+                    call.respondRedirect("/account")
+                } else { call.respondRedirect("/catalogue?error=Book unavailable") }
+            }
+            
+            post("/books/{id}/return"){
+                val session = call.principal<UserSession>()
+                val user = session?.let{UserRepository().findByEmail(it.email)}
+                val bookId = call.parameters["id"]?.toIntOrNull()
+                              
+                if (user?.id == null || bookId == null) {
+                    call.respondRedirect("/account") 
+                    return@post
+                }
+                
+                LoanRepository().returnBook(user.id,bookId)
+                call.respondRedirect("/account")
+            }
+            
+            get("/account") {
+                val session = call.principal<UserSession>()
+                val user = session?.let{UserRepository().findByEmail(it.email)}
+                              
+                if (user?.id == null) {
+                    call.respondRedirect("/login") 
+                    return@get
+                }
+                
+                val loans = LoanRepository().getActiveLoansForUser(user.id)
+                call.respondTemplate("account.peb", mapOf("user" to user, "loans" to loans))
+            }
+            
         }
     }
 }
