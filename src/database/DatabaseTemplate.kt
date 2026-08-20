@@ -17,6 +17,7 @@ object DatabaseTemplate {
             SchemaUtils.create(Users,Books,Loans)
         }
         
+        
         BookCsvImporter.importIfEmpty()
     }
 }
